@@ -1,14 +1,11 @@
-package com.fpt.ecommerce.service;
+package com.fpt.ecommerce.security.service;
 
 import com.fpt.ecommerce.entity.Member;
 import com.fpt.ecommerce.entity.Permission;
 import com.fpt.ecommerce.entity.Role;
 import com.fpt.ecommerce.repository.MemberRepository;
-import jakarta.transaction.Transactional;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,37 +13,33 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserService implements UserDetailsService {
-    MemberRepository memberRepository;
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final MemberRepository memberRepository;
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        Set<SimpleGrantedAuthority> authority = new HashSet<>();
+        Set<GrantedAuthority> authorities = new HashSet<>();
 
-        for (Role role: member.getRoles()) {
-            authority.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-
-            for (Permission permission: role.getPermissions()) {
-                authority.add(new SimpleGrantedAuthority(permission.getName()));
+        for (Role role : member.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            for (Permission permission : role.getPermissions()) {
+                authorities.add(new SimpleGrantedAuthority(permission.getName()));
             }
         }
 
         return new User(
                 member.getUsername(),
                 member.getPassword(),
-                authority
+                authorities
         );
     }
 }

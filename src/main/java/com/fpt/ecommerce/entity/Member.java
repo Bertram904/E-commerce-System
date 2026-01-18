@@ -1,12 +1,13 @@
 package com.fpt.ecommerce.entity;
-
-import com.fpt.ecommerce.utils.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "tblMember")
@@ -15,33 +16,42 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String username;
+    String username;
 
     @Column(nullable = false)
-    private String password;
+    String password;
 
     @Column(length = 255)
-    private String address;
+    String address;
+
+    @Column(name = "dob", nullable = false)
+    LocalDate dob;
 
     @Column(length = 25)
-    private String phoneNumber;
+    String phoneNumber;
 
     @Column(nullable = false, length = 50)
-    private String email;
+    String email;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tbl_member_role",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    Set<Role> roles;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    Date createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Date updatedAt;
+    Date updatedAt;
 }

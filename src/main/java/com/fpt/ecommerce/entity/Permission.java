@@ -3,23 +3,22 @@ package com.fpt.ecommerce.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "tbl_permission")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="tblCategory")
 @Builder
-public class Category {
+public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Product> products;
+    private String description;
 }

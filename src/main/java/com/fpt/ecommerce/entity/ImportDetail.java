@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name="tblImportDetail")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
