@@ -1,6 +1,8 @@
 package com.fpt.ecommerce.controller;
 
 import com.fpt.ecommerce.dto.request.LoginRequest;
+import com.fpt.ecommerce.dto.request.LogoutRequest;
+import com.fpt.ecommerce.dto.request.RefreshTokenRequest;
 import com.fpt.ecommerce.dto.request.RegisterRequest;
 import com.fpt.ecommerce.dto.response.ApiResponse;
 import com.fpt.ecommerce.dto.response.AuthResponse;
@@ -41,6 +43,21 @@ public class AuthController {
         return ApiResponse.<AuthResponse>builder()
                 .message("Login successfully!")
                 .result(authService.login(request))
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        return ApiResponse.<AuthResponse>builder()
+                .result(authService.refreshToken(request))
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) {
+        authService.logout(request);
+        return ApiResponse.<Void>builder()
+                .message("Logout successfully!")
                 .build();
     }
 }
