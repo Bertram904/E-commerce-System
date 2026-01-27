@@ -31,6 +31,11 @@ public enum ErrorCode {
     // --- 2xxx: PRODUCT & CATEGORY ---
     PRODUCT_NOT_FOUND(2001, "error.product.not_found", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND(2002, "error.category.not_found", HttpStatus.NOT_FOUND),
+    OUT_OF_STOCK(2003, "error.out.of_stock", HttpStatus.BAD_REQUEST),
+    CART_NOT_FOUND(2004, "error.cart.not_found", HttpStatus.NOT_FOUND),
+    ITEM_NOT_FOUND(2005, "error.item.not_found", HttpStatus.NOT_FOUND),
+    CART_EMPTY(2006, "error.cart_empty", HttpStatus.BAD_REQUEST),
+    CATEGORY_HAS_PRODUCTS(2007, "error.category.has_products", HttpStatus.BAD_REQUEST),
 
     // --- 3xxx: SUPPLIER & INVENTORY ---
     SUPPLIER_NOT_FOUND(3001, "error.supplier.not_found", HttpStatus.NOT_FOUND),
