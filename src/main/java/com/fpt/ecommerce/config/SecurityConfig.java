@@ -1,10 +1,11 @@
 package com.fpt.ecommerce.config;
 
+import com.fpt.ecommerce.security.jwt.JwtAuthenticationEntryPoint;
 import com.fpt.ecommerce.security.jwt.JwtAuthenticationFilter;
-import com.fpt.ecommerce.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,24 +23,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
 
     JwtAuthenticationFilter jwtAuthenticationFilter;
     UserDetailsService userDetailsService;
-    com.fpt.ecommerce.security.jwt.JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     CorsConfigurationSource corsConfigurationSource;
+    AppConfig appConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,6 +50,7 @@ public class SecurityConfig {
 
                         // Public Data
                         .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**").permitAll()
 
                         // Swagger UI
                         .requestMatchers(
@@ -64,9 +63,16 @@ public class SecurityConfig {
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+//                            log.info("Go to access denied hanlder");
+//                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//                            response.getWriter().write("Access Denied");
+//                            response.flushBuffer();
+//                        })
                 )
 
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sess -> sess
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
