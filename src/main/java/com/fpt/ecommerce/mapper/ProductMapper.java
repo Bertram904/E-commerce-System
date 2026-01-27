@@ -1,3 +1,4 @@
+
 package com.fpt.ecommerce.mapper;
 
 import com.fpt.ecommerce.dto.request.ProductRequest;
@@ -9,14 +10,16 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
+
+    @Mapping(target = "category", ignore = true)
+    Product toProduct(ProductRequest request);
+
     @Mapping(target = "categoryName", source = "category.name")
     ProductResponse toProductResponse(Product product);
 
-    @Mapping(target="category", ignore = true)
-    Product toProduct(ProductRequest request);
-
-    @Mapping(target = "category", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    void updateProduct(@MappingTarget Product product, ProductRequest productRequest);
+    @Mapping(target = "updatedAt", ignore = true)
+    void updateProduct(@MappingTarget Product product, ProductRequest request);
 }

@@ -3,13 +3,15 @@ package com.fpt.ecommerce.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
+import java.math.BigDecimal;
 @Data
+@Builder
 public class ProductResponse {
-    private Long id;
-    private String name;
-    private Double price;
-    private String description;
-    private String image;
-    private String categoryName;
+    Long id;
+    String name;
+    BigDecimal price;
+    String description;
+    String imageUrl;
+    Integer stockQuantity;
+    String categoryName;
 }
