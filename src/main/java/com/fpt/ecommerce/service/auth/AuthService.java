@@ -1,4 +1,4 @@
-package com.fpt.ecommerce.service;
+package com.fpt.ecommerce.service.auth;
 
 import com.fpt.ecommerce.dto.request.LoginRequest;
 import com.fpt.ecommerce.dto.request.LogoutRequest;
@@ -84,15 +84,17 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        //Lay thong tin UserDetails
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         var member = memberRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        //Create Scop
+        //Create Scope adn Token
         String scope = buildScope(member);
+        String accessToken = jwtUtils.generateToken(userDetails, scope, member.getId());
 
-        String accessToken = jwtUtils.generateToken(userDetails, scope);
+        //Create refreshToken
         String refreshToken = createRefreshToken(member);
 
         return AuthResponse.builder()
@@ -103,6 +105,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         return refreshTokenRepository.findByToken(request.getRefreshToken())
                 .map(this::verifyExpiration)
@@ -113,11 +116,14 @@ public class AuthService {
                     //Nap lai scope
                     String scope = buildScope(member);
 
-                    String newAccessToken = jwtUtils.generateToken(userDetails, scope);
+                    String newAccessToken = jwtUtils.generateToken(userDetails, scope, member.getId());
+
+                    refreshTokenRepository.deleteByToken(request.getRefreshToken());
+                    String newRefreshToken = createRefreshToken(member);
 
                     return AuthResponse.builder()
                             .token(newAccessToken)
-                            .refreshToken(request.getRefreshToken())
+                            .refreshToken(newRefreshToken)
                             .authenticated(true)
                             .build();
                 })

@@ -7,9 +7,9 @@ import com.fpt.ecommerce.dto.request.RegisterRequest;
 import com.fpt.ecommerce.dto.response.ApiResponse;
 import com.fpt.ecommerce.dto.response.AuthResponse;
 import com.fpt.ecommerce.dto.response.MemberResponse;
-import com.fpt.ecommerce.entity.Member;
-import com.fpt.ecommerce.service.AuthService;
+import com.fpt.ecommerce.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClient;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     AuthService authService;
+    private final RestClient.Builder builder;
 
     @Operation(summary = "Register new account", description = "Create new user with USER role default")
     @PostMapping("/register")
@@ -54,10 +56,14 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) {
-        authService.logout(request);
-        return ApiResponse.<Void>builder()
-                .message("Logout successfully!")
-                .build();
+    public ResponseEntity<ApiResponse<Void>> logout
+            (HttpServletRequest request,
+             LogoutRequest logoutRequest) {
+        authService.logout(request, logoutRequest);
+        return ResponseEntity.ok(
+          ApiResponse.<Void>builder()
+                  .message("Logout successfully!")
+                  .build()
+        );
     }
 }

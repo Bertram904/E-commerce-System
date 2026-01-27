@@ -3,7 +3,7 @@ package com.fpt.ecommerce.controller;
 import com.fpt.ecommerce.constant.PredefinedPermission; // Import file hằng số
 import com.fpt.ecommerce.dto.response.ApiResponse;
 import com.fpt.ecommerce.dto.response.MemberResponse;
-import com.fpt.ecommerce.service.MemberService;
+import com.fpt.ecommerce.service.auth.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;

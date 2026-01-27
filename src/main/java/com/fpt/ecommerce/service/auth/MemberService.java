@@ -1,4 +1,4 @@
-package com.fpt.ecommerce.service;
+package com.fpt.ecommerce.service.auth;
 
 import com.fpt.ecommerce.dto.response.MemberResponse;
 import com.fpt.ecommerce.entity.Member;
