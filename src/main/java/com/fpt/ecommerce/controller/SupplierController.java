@@ -48,7 +48,7 @@ public class SupplierController {
     // 3. CREATE
     @Operation(summary = "Tạo nhà cung cấp mới", description = "Cần quyền CREATE_SUPPLIER")
     @PostMapping
-    @PreAuthorize("hasAuthority('" + PredefinedPermission.CREATE_SUPPLIER + "')")
+    @PreAuthorize("hasAuthority('" + PredefinedPermission.CREATE_SUPPLIER + "') or hasRole('ROLE_AMDIN')")
     public ApiResponse<SupplierResponse> createSupplier(@RequestBody @Valid SupplierRequest request) {
         return ApiResponse.<SupplierResponse>builder()
                 .message("supplier.create.success")

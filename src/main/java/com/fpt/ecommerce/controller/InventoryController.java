@@ -1,5 +1,6 @@
 package com.fpt.ecommerce.controller;
 
+import com.fpt.ecommerce.constant.PredefinedPermission;
 import com.fpt.ecommerce.dto.request.ImportRequest;
 import com.fpt.ecommerce.dto.response.ApiResponse;
 import com.fpt.ecommerce.dto.response.ImportInvoiceResponse;
@@ -24,6 +25,7 @@ public class InventoryController {
     InventoryService inventoryService;
 
     @PostMapping("/import")
+    @PreAuthorize("hasAuthority('"+ PredefinedPermission.ROLE_STAFF + "')")
     public ApiResponse<ImportInvoiceResponse> importGoods(@RequestBody @Valid ImportRequest request) {
         String currentStaffUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 

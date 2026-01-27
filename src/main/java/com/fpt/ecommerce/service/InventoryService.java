@@ -52,8 +52,8 @@ public class InventoryService {
         for (ImportRequest.ImportItemRequest itemRequest : importRequest.getItems()) {
             Product product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-            int newQuantity = product.getQuantity() + itemRequest.getQuantity();
-            product.setQuantity(newQuantity);
+            int newQuantity = product.getStockQuantity() + itemRequest.getQuantity();
+            product.setStockQuantity(newQuantity);
             productRepository.save(product);
 
             ImportDetail detail = importMapper.toImportDetail(itemRequest);
