@@ -1,4 +1,4 @@
-package com.fpt.ecommerce.service;
+package com.fpt.ecommerce.service.product;
 
 import com.fpt.ecommerce.dto.request.CategoryRequest;
 import com.fpt.ecommerce.entity.Category;
